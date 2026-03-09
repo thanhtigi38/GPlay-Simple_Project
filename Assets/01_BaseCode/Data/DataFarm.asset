@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1c1823fa808e4f41b0abe961b49446d, type: 3}
+  m_Name: DataFarm
+  m_EditorClassIdentifier: 
+  categoryInfos:
+  - displayName: FARM_ZONE_1
+    typePic: 0
+    totalNumberAds: 0
+    Id: 20000
+    IdCateArea: 0
+    pictureFiles:
+    - {fileID: 4900000, guid: 7c0073960e640544d8702f317acbd043, type: 3}
+    - {fileID: 4900000, guid: 1b2f3729622e71942aefa9dec14b3b2f, type: 3}
+    - {fileID: 4900000, guid: 57da5f459e48554438453a5e68883a65, type: 3}
+    - {fileID: 4900000, guid: a7560cd0f2051cb40916c319e553e013, type: 3}
+    - {fileID: 4900000, guid: 484d0991e6bacfd4e8ab844c0475de89, type: 3}
+    - {fileID: 4900000, guid: 6b44a6cefcdf8044eaec09f082bccadc, type: 3}
+    - {fileID: 4900000, guid: a325a7f731c9ace4082d813a53fa3845, type: 3}
+  - displayName: FARM_ZONE_2
+    typePic: 0
+    totalNumberAds: 0
+    Id: 20001
+    IdCateArea: 0
+    pictureFiles:
+    - {fileID: 4900000, guid: e518d5788eea08b4b8fe058fbafe628b, type: 3}
+    - {fileID: 4900000, guid: afd191dddd257fe44b75db54a73ef81d, type: 3}
+    - {fileID: 4900000, guid: bc825be948c03824f8b088ae8d3f4660, type: 3}
+    - {fileID: 4900000, guid: b40a762f10df66f46b0f7018ef60f7dd, type: 3}
+    - {fileID: 4900000, guid: 60a06399030d8044dac177055b047d8b, type: 3}
+    - {fileID: 4900000, guid: f9b47e01d36d036498a40ef807130e29, type: 3}
+    - {fileID: 4900000, guid: 7ef1d879d5261104281464b48faa010f, type: 3}
+    - {fileID: 4900000, guid: 04c82bd97b969c54db5683cbc0e35795, type: 3}
+    - {fileID: 4900000, guid: bc41bf9d7817d8b499a52b646c081730, type: 3}
+  - displayName: FARM_ZONE_3
+    typePic: 0
+    totalNumberAds: 0
+    Id: 20002
+    IdCateArea: 0
+    pictureFiles:
+    - {fileID: 4900000, guid: 77811b6788da18948b715f4de8ab6578, type: 3}
+    - {fileID: 4900000, guid: 3eddbdd1204b68e4eae8d7560725587a, type: 3}
+    - {fileID: 4900000, guid: e853f35aae2d34e4e89c870f1664a49f, type: 3}
+    - {fileID: 4900000, guid: a8ad721be342ea1469df36b86e0c7a5b, type: 3}
+    - {fileID: 4900000, guid: 473615aeaf327e542842a61d08feca7e, type: 3}
+    - {fileID: 4900000, guid: ec57374343f3e2847b925ea8244b74eb, type: 3}
+    - {fileID: 4900000, guid: 0f4ebe62cc6794e43b12866ff4295706, type: 3}
+    - {fileID: 4900000, guid: bbc19716e742ada44b2b47c0b214e9ca, type: 3}
+    - {fileID: 4900000, guid: 766f839ea01e4b64c85fb2d5f350751b, type: 3}
+    - {fileID: 4900000, guid: 8aa6f6c0d1d1fd8448e1cdb49f5a7605, type: 3}
+    - {fileID: 4900000, guid: 80145ece44e4c9a4bb1f018f326b09aa, type: 3}
+    - {fileID: 4900000, guid: 005ade5e81a248e4cb89a9813af24567, type: 3}
+    - {fileID: 4900000, guid: fb77926cc63b90c4189bc1028c97831f, type: 3}
+  - displayName: FARM_ZONE_4
+    typePic: 0
+    totalNumberAds: 0
+    Id: 20003
+    IdCateArea: 0
+    pictureFiles:
+    - {fileID: 4900000, guid: 92478769d02cc914d9de9eb7c2a99b14, type: 3}
+    - {fileID: 4900000, guid: ede5c7806654a3e4692442169725e1d4, type: 3}
+    - {fileID: 4900000, guid: be7321176f5ec3d4eaec7f6ee0c7a11f, type: 3}
+    - {fileID: 4900000, guid: ab53abb54168adf4f91d982e8fb58012, type: 3}
+    - {fileID: 4900000, guid: 5eb66c8892c566645bac8e25aee28f27, type: 3}
+    - {fileID: 4900000, guid: d166cbbfd40c62248bd7ad13ec29a2f7, type: 3}
+    - {fileID: 4900000, guid: 8fa15c2eb0bbeca42ac03ef17c4360e6, type: 3}
+    - {fileID: 4900000, guid: 7a5ffd8b2dd4edd45ba23e245cf85989, type: 3}
+    - {fileID: 4900000, guid: 855beedb630c37d49b096e64c3a35e94, type: 3}
+    - {fileID: 4900000, guid: 891a8dc5001ecc842a3355b0a540150e, type: 3}
+    - {fileID: 4900000, guid: f00bb6cf9925f75469cdbc23727dfbd4, type: 3}
+    - {fileID: 4900000, guid: a81d91d700dc70348b14c6188f3875a8, type: 3}
+  - displayName: FARM_ZONE_5
+    typePic: 0
+    totalNumberAds: 0
+    Id: 20004
+    IdCateArea: 0
+    pictureFiles:
+    - {fileID: 4900000, guid: f0162d3999e8b8f4d836d748c546b981, type: 3}
+    - {fileID: 4900000, guid: 6001149f8a58cc946944063acf9ea5e6, type: 3}
+    - {fileID: 4900000, guid: 32099b58cd9f40541815c581e174add2, type: 3}
+    - {fileID: 4900000, guid: 0a13c4a2653069647966ddbcf8d2db2c, type: 3}
+    - {fileID: 4900000, guid: 36b4b59725b14724a95e67714169e05f, type: 3}

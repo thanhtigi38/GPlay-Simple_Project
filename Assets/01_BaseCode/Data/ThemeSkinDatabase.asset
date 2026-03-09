@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12fe12b89817e4c41a86f832f0ab32e0, type: 3}
+  m_Name: ThemeSkinDatabase
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  listThemeSkinData:
+  - id: 0
+    typeBuy: 4
+    themeType: 36
+    typePack: 34
+    prefab: {fileID: 785838023568118900, guid: 0700a1ac0ba4c844e870b4ecb7a25c78, type: 3}
+    icon: {fileID: 21300000, guid: 995df878f69a27741a6af2d45d3cba22, type: 3}
+  - id: 1
+    typeBuy: 2
+    themeType: 38
+    typePack: 36
+    prefab: {fileID: 785838023568118900, guid: 3014160fd671d124eb52165e33574c3c, type: 3}
+    icon: {fileID: 21300000, guid: a9810e129a0530749a10b325364fb86f, type: 3}
+  - id: 2
+    typeBuy: 2
+    themeType: 41
+    typePack: 39
+    prefab: {fileID: 785838023568118900, guid: 29c37a37aaf195048afd49fc161c3555, type: 3}
+    icon: {fileID: 21300000, guid: 3599b3e6ac6ffbd4aaf5bcd92b0337e4, type: 3}
+  - id: 3
+    typeBuy: 2
+    themeType: 39
+    typePack: 37
+    prefab: {fileID: 785838023568118900, guid: 2db816ebc3c87cd4ea3674c7b0a89857, type: 3}
+    icon: {fileID: 21300000, guid: cbc55ec4081502b49859118f6c06d501, type: 3}
+  - id: 4
+    typeBuy: 2
+    themeType: 37
+    typePack: 35
+    prefab: {fileID: 785838023568118900, guid: bd12f9077426ff84688959acdbdcc98e, type: 3}
+    icon: {fileID: 21300000, guid: f6f18eda9e12cbe4b89e93f2b8549ef7, type: 3}
+  - id: 5
+    typeBuy: 2
+    themeType: 45
+    typePack: 43
+    prefab: {fileID: 785838023568118900, guid: 03ea1210b1b01f24abc7fd1b95556c57, type: 3}
+    icon: {fileID: 21300000, guid: 0192f905ffbc8c749ad50e52b88e4546, type: 3}
+  - id: 6
+    typeBuy: 2
+    themeType: 40
+    typePack: 38
+    prefab: {fileID: 785838023568118900, guid: d66d89ed8695430408917d783ed7d097, type: 3}
+    icon: {fileID: 21300000, guid: 3717f163fc174e044ae43855f94ad7b3, type: 3}
+  - id: 7
+    typeBuy: 2
+    themeType: 44
+    typePack: 42
+    prefab: {fileID: 785838023568118900, guid: cb80d5f8ad0a1e1498d3d9853af964ba, type: 3}
+    icon: {fileID: 21300000, guid: 8d2bff66bcd2e654a8bb9ec662eb6589, type: 3}
+  - id: 8
+    typeBuy: 2
+    themeType: 43
+    typePack: 41
+    prefab: {fileID: 785838023568118900, guid: 3de4dab42e432774080d8ad360934035, type: 3}
+    icon: {fileID: 21300000, guid: df50b564c320ff04ea6e333a9d70d01f, type: 3}
+  - id: 9
+    typeBuy: 2
+    themeType: 46
+    typePack: 44
+    prefab: {fileID: 785838023568118900, guid: 7bda32d12156c7f4898ed55b5043653c, type: 3}
+    icon: {fileID: 21300000, guid: 7bfe1db4a16f78e4ab69bd999661edc3, type: 3}
+  - id: 10
+    typeBuy: 2
+    themeType: 42
+    typePack: 40
+    prefab: {fileID: 785838023568118900, guid: c3fa2232b44d6ad458d05b280eb470b8, type: 3}
+    icon: {fileID: 21300000, guid: 622dfceb794add94e89e7466cc98e366, type: 3}
+  - id: 11
+    typeBuy: 0
+    themeType: 72
+    typePack: 70
+    prefab: {fileID: 785838023568118900, guid: 6f4f7b2308a3fa24e83479a3685431a2, type: 3}
+    icon: {fileID: 21300000, guid: e336bebebed04674593e584b0c920307, type: 3}
+  - id: 12
+    typeBuy: 0
+    themeType: 73
+    typePack: 71
+    prefab: {fileID: 785838023568118900, guid: b64c9fe0291e929498fe1fabebea0a51, type: 3}
+    icon: {fileID: 21300000, guid: a00bc93650d035f4b9c7628e80c5b112, type: 3}
+  - id: 13
+    typeBuy: 0
+    themeType: 74
+    typePack: 72
+    prefab: {fileID: 785838023568118900, guid: 299ded69119b2f945916149097356ee6, type: 3}
+    icon: {fileID: 21300000, guid: e9747e6af852f9148b2ddc58337fc3bd, type: 3}
+  - id: 14
+    typeBuy: 0
+    themeType: 75
+    typePack: 73
+    prefab: {fileID: 785838023568118900, guid: a06985da46c61b2419337912a1b0ac9b, type: 3}
+    icon: {fileID: 21300000, guid: 74ff84e83203f4f45bcc305586f5f73e, type: 3}
+  - id: 15
+    typeBuy: 0
+    themeType: 76
+    typePack: 74
+    prefab: {fileID: 785838023568118900, guid: bef0a461aefc7ad46bcb9053025c30f7, type: 3}
+    icon: {fileID: 21300000, guid: bf3b2f2b913c7fb429dae98cd65c937c, type: 3}
+  - id: 16
+    typeBuy: 0
+    themeType: 77
+    typePack: 75
+    prefab: {fileID: 785838023568118900, guid: bf6f4f86987154f419107ca8e9d1e47e, type: 3}
+    icon: {fileID: 21300000, guid: 24f0c39cee9a85e43a2845f2ff6a64c6, type: 3}
+  - id: 17
+    typeBuy: 5
+    themeType: 80
+    typePack: 78
+    prefab: {fileID: 638240471222814745, guid: 177607b5d71cc034da3eefde5a2f10ce, type: 3}
+    icon: {fileID: 21300000, guid: dc7e915b5fa2fe944bdfe2d2710db04f, type: 3}

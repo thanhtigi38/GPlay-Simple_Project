@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1c1823fa808e4f41b0abe961b49446d, type: 3}
+  m_Name: DataSpecial
+  m_EditorClassIdentifier: 
+  categoryInfos:
+  - displayName: 36
+    typePic: 1
+    totalNumberAds: 1
+    Id: 36
+    IdCateArea: 2
+    pictureFiles:
+    - {fileID: 4900000, guid: 8a9cd18e33fe0184ebca41d4a714cdef, type: 3}
+  - displayName: 37
+    typePic: 0
+    totalNumberAds: 0
+    Id: 37
+    IdCateArea: 2
+    pictureFiles:
+    - {fileID: 4900000, guid: 6bccb56c1d595264bbb2295524c7e88f, type: 3}
+    - {fileID: 4900000, guid: 6cb2379539c246e479b7a7fc475920fa, type: 3}
+    - {fileID: 4900000, guid: c398b36515aaba6489b670f5bc90f6d1, type: 3}
+    - {fileID: 4900000, guid: 3a21ffc23d9e67842bbbd99347ea50ec, type: 3}
+    - {fileID: 4900000, guid: fab7a174d3aa8534cbee9717cee4ee75, type: 3}
+    - {fileID: 4900000, guid: 3660812a00013e74c806d321b5f56721, type: 3}
+  - displayName: 40
+    typePic: 1
+    totalNumberAds: 1
+    Id: 40
+    IdCateArea: 2
+    pictureFiles:
+    - {fileID: 4900000, guid: 95c305d07855cb044a2c9b0bf686845d, type: 3}
+  - displayName: 41
+    typePic: 1
+    totalNumberAds: 2
+    Id: 41
+    IdCateArea: 2
+    pictureFiles:
+    - {fileID: 4900000, guid: 48e0a0b98b58885488b5e08648320af2, type: 3}
+    - {fileID: 4900000, guid: 9c82621679e10e34ab385c089c9bd83b, type: 3}
+    - {fileID: 4900000, guid: 079b7c5721ebb684bad419d55fa0bd74, type: 3}
+  - displayName: 42
+    typePic: 0
+    totalNumberAds: 0
+    Id: 42
+    IdCateArea: 2
+    pictureFiles:
+    - {fileID: 4900000, guid: 38c04c9db3006484b9bb08062dc60b35, type: 3}
+    - {fileID: 4900000, guid: 372238166a4a22c448809aeb9269f1b9, type: 3}
+    - {fileID: 4900000, guid: fb575617417748b4c96be441f91be5b7, type: 3}
+  - displayName: 39
+    typePic: 1
+    totalNumberAds: 3
+    Id: 39
+    IdCateArea: 2
+    pictureFiles:
+    - {fileID: 4900000, guid: 604d6f8d2f62ec34f82cce18dc8a7058, type: 3}
+    - {fileID: 4900000, guid: 2ed3eb38e500a4c42a14fa80020b71fe, type: 3}
+    - {fileID: 4900000, guid: 0efb0d0bda2c9784a814e1cf79f3c4e9, type: 3}
+    - {fileID: 4900000, guid: 00e17bebc4810ce4a8b5d4fbc35897fe, type: 3}
+  - displayName: 44
+    typePic: 1
+    totalNumberAds: 2
+    Id: 44
+    IdCateArea: 2
+    pictureFiles:
+    - {fileID: 4900000, guid: 9fb63a5d7f360ec46bdbad3f56958328, type: 3}
+    - {fileID: 4900000, guid: de6ff31a816ab1a41bb62e97acb5dfef, type: 3}
+    - {fileID: 4900000, guid: 3a6fe51ff4e55454d92d0181b56a6d23, type: 3}
+  - displayName: 45
+    typePic: 0
+    totalNumberAds: 0
+    Id: 45
+    IdCateArea: 2
+    pictureFiles:
+    - {fileID: 4900000, guid: e21ea50d9d8c0e74693198e007bc5722, type: 3}
+    - {fileID: 4900000, guid: 1ef3770dc1e292440a1a43205d35af18, type: 3}
+  - displayName: 47
+    typePic: 1
+    totalNumberAds: 1
+    Id: 47
+    IdCateArea: 2
+    pictureFiles:
+    - {fileID: 4900000, guid: ba3e6fcc0dd6df74a8f0a9be6f773cfd, type: 3}
+    - {fileID: 4900000, guid: 6465b6ffdc67da045be3d2f193c728ec, type: 3}

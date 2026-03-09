@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 066cf82f8f80d408c856e48fc8f1127b, type: 3}
+  m_Name: vFavorites Data
+  m_EditorClassIdentifier: 
+  pages:
+  - items:
+    - globalId:
+        globalObjectIdString: GlobalObjectId_V1-1-674ff76d30639654481d096ff57cf8a6-3773711280248359246-0
+      _typeString: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      _obj: {fileID: 3773711280248359246, guid: 674ff76d30639654481d096ff57cf8a6, type: 3}
+      isSceneGameObject: 0
+      isFolder: 0
+      isAsset: 1
+      _id: 1044561578
+    - globalId:
+        globalObjectIdString: GlobalObjectId_V1-1-ac1cdbba782826449a2d84e6e1727e24-102900000-0
+      _typeString: UnityEditor.DefaultAsset, UnityEditor.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      _obj: {fileID: 102900000, guid: ac1cdbba782826449a2d84e6e1727e24, type: 3}
+      isSceneGameObject: 0
+      isFolder: 1
+      isAsset: 0
+      _id: 1059705107
+    - globalId:
+        globalObjectIdString: GlobalObjectId_V1-1-0bb79da524c75c14c85f0fd9ff7ad0e8-102900000-0
+      _typeString: UnityEditor.DefaultAsset, UnityEditor.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      _obj: {fileID: 102900000, guid: 0bb79da524c75c14c85f0fd9ff7ad0e8, type: 3}
+      isSceneGameObject: 0
+      isFolder: 1
+      isAsset: 0
+      _id: 1059231691
+    - globalId:
+        globalObjectIdString: GlobalObjectId_V1-3-741d4aa0ed1d1e74a801e70edb9958d2-11400000-0
+      _typeString: _01_ArtPuzzle.Scripts.NewLevelSystem.Editor.LevelDatabase, Assembly-CSharp-Editor,
+        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      _obj: {fileID: 11400000, guid: 741d4aa0ed1d1e74a801e70edb9958d2, type: 2}
+      isSceneGameObject: 0
+      isFolder: 0
+      isAsset: 1
+      _id: 1060090297
+    name: Common
+    _id: 1060701721
+  - items: []
+    name: Page 2
+    _id: 1043614705
+  - items: []
+    name: Page 3
+    _id: 1051147525
+  - items: []
+    name: Page 4
+    _id: 1063574106
+  - items: []
+    name: Page 5
+    _id: 0
+  rowScale: 1
