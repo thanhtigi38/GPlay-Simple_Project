@@ -20,7 +20,7 @@ public static class ApplicationStart
             RemoteConfigController.ReloadFirebaseKeys();
 
         RegisterService<GameServices>();
-        RegisterService<LocalizeService>();
+        //RegisterService<LocalizeService>();
 
     }
 
