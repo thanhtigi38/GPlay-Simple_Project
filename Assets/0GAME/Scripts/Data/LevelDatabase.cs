@@ -17,5 +17,6 @@ namespace ThanhND
         public int id;
         public int totalObjects;
         public int totalTypes;
+        public float maxPairDistance = 5.0f; 
     }
 }

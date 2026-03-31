@@ -196,4 +196,14 @@ public class UseProfile : MonoBehaviour
     
     //my game
     
+    public static int Coins
+    {
+        get { return PlayerPrefs.GetInt(StringHelper.COINS, 100); }
+        set
+        {
+            PlayerPrefs.SetInt(StringHelper.COINS, value);
+            PlayerPrefs.Save();
+        }
+    }
+    
 }

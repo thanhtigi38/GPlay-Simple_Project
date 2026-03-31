@@ -23,33 +23,6 @@ MonoBehaviour:
       isFolder: 0
       isAsset: 1
       _id: 1044561578
-    - globalId:
-        globalObjectIdString: GlobalObjectId_V1-1-ac1cdbba782826449a2d84e6e1727e24-102900000-0
-      _typeString: UnityEditor.DefaultAsset, UnityEditor.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      _obj: {fileID: 102900000, guid: ac1cdbba782826449a2d84e6e1727e24, type: 3}
-      isSceneGameObject: 0
-      isFolder: 1
-      isAsset: 0
-      _id: 1059705107
-    - globalId:
-        globalObjectIdString: GlobalObjectId_V1-1-0bb79da524c75c14c85f0fd9ff7ad0e8-102900000-0
-      _typeString: UnityEditor.DefaultAsset, UnityEditor.CoreModule, Version=0.0.0.0,
-        Culture=neutral, PublicKeyToken=null
-      _obj: {fileID: 102900000, guid: 0bb79da524c75c14c85f0fd9ff7ad0e8, type: 3}
-      isSceneGameObject: 0
-      isFolder: 1
-      isAsset: 0
-      _id: 1059231691
-    - globalId:
-        globalObjectIdString: GlobalObjectId_V1-3-741d4aa0ed1d1e74a801e70edb9958d2-11400000-0
-      _typeString: _01_ArtPuzzle.Scripts.NewLevelSystem.Editor.LevelDatabase, Assembly-CSharp-Editor,
-        Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      _obj: {fileID: 11400000, guid: 741d4aa0ed1d1e74a801e70edb9958d2, type: 2}
-      isSceneGameObject: 0
-      isFolder: 0
-      isAsset: 1
-      _id: 1060090297
     name: Common
     _id: 1060701721
   - items: []

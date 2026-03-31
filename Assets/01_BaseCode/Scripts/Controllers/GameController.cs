@@ -49,10 +49,11 @@ public class GameController : MonoBehaviour
         //adsManager.Init();
         musicManager.Init();
         //coroutineStartGame = StartCoroutine(LoadingScene());
+        GameController.Instance.musicManager.PlayGameplaySceneBackgroundMusic();
         if (UseProfile.NewUser)
         {
             UseProfile.NewUser = false;
-            LoadingPanel.Instance.GotoScene(SceneName.GAME_PLAY,true, () =>
+            LoadingPanel.Instance.GotoScene(SceneName.HOME_SCENE,true, () =>
             {
             });
         }

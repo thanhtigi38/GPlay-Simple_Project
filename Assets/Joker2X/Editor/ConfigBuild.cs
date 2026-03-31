@@ -490,7 +490,7 @@ public class ConfigBuild
     [MenuItem("Open Scene/Loading Scene #1")]
     public static void OpenSceneStartLoading()
     {
-        string localPath = "Assets/_MakeoverASMR/Scenes/InitScene.unity";
+        string localPath = "Assets/0GAME/Scenes/LoadingScene.unity";
         EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
         EditorSceneManager.OpenScene(localPath);
     }
@@ -498,7 +498,7 @@ public class ConfigBuild
     [MenuItem("Open Scene/Home Scene #2")]
     public static void OpenSceneMainHome()
     {
-        string localPath = "Assets/_MakeoverASMR/Scenes/HomeScene.unity";
+        string localPath = "Assets/0GAME/Scenes/HomeScene.unity";
         EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
         EditorSceneManager.OpenScene(localPath);
     }
@@ -506,7 +506,7 @@ public class ConfigBuild
     [MenuItem("Open Scene/Game Play #3")]
     public static void OpenSceneGamePlay()
     {
-        string localPath = "Assets/_MakeoverASMR/Scenes/GameplayScene.unity";
+        string localPath = "Assets/0GAME/Scenes/GameplayScene.unity";
         EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
         EditorSceneManager.OpenScene(localPath);
     }

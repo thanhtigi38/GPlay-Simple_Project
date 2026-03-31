@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2478035269746967810}
   m_Layer: 0
   m_Name: Object_1
-  m_TagString: Untagged
+  m_TagString: ObjectDrop
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 64969687d1037b54e879837651cdc711, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0f36414403bbb784d857c4ff543877e8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -205,3 +205,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ThanhND.ObjectDrop
   id: 1
   rigidbody2D: {fileID: 2866194314660988401}
+  objectState: 0
