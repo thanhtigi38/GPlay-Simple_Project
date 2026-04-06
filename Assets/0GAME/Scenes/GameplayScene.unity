@@ -667,7 +667,7 @@ MonoBehaviour:
   gameState: 0
   startY: 0
   paddingX: 0.5
-  spacing: 0.9
+  spacing: 1.1
   levelDatabase: {fileID: 11400000, guid: e97ac3cb6e248d147856f7723d16b036, type: 2}
   allObjectsParent: {fileID: 135422361}
   maxAvailableTypes: 27

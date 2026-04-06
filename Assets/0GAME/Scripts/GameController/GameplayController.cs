@@ -84,7 +84,7 @@ namespace ThanhND
         {
             Debug.LogError("zo pot " + objectDrop.id);
             objectDropped.Add(objectDrop);
-            
+
             CheckLossGame();
         }
 
@@ -115,7 +115,7 @@ namespace ThanhND
                         break;
                     }
                 }
-                
+
                 if (lossGame) LossGame();
             }
         }
@@ -144,14 +144,12 @@ namespace ThanhND
             }
 
             objectDropped.Clear();
-
             List<string> objectIDsToSpawn = PrepareObjectList(levelData);
-
             List<Vector3> spawnedPositions = new List<Vector3>();
             totalObjectDrops.Clear();
 
-            float currentMaxY = startY + spacing * 2f;
-            float stepY = spacing * 0.5f;
+            float currentMaxY = startY + spacing; 
+            float progressStepY = (spacing * 0.3f); // Tỉ lệ nới lỏng sau mỗi cặp
 
             for (int i = 0; i < objectIDsToSpawn.Count; i += 2)
             {
@@ -165,7 +163,9 @@ namespace ThanhND
                 spawnedPositions.Add(pos2);
                 await CreateObject(id, pos2);
 
-                currentMaxY += stepY;
+                currentMaxY += progressStepY;
+
+                if (i % 15 == 0) await UniTask.Yield();
             }
         }
 
@@ -244,65 +244,59 @@ namespace ThanhND
             totalObjectDrops.Add(go.GetComponent<ObjectDrop>());
         }
 
+        private Vector2 GetRandomOrganicPosition(float minY, float maxY, float screenWidthLimit, List<Vector3> spawnedPositions)
+        {
+            int attempts = 0;
+            float checkRadius = spacing * 0.82f; // Nếu vẫn đè nhau quá, hãy tăng nhẹ số này lên 0.85f
+
+            while (attempts < 250)
+            {
+                attempts++;
+
+                float x = Random.Range(-screenWidthLimit, screenWidthLimit);
+                float y = Random.Range(minY, maxY);
+                Vector2 candidate = new Vector2(x, y);
+
+                if (!IsOverlapping(candidate, spawnedPositions, checkRadius))
+                    return candidate;
+        
+                if(attempts > 100) maxY += 0.05f;
+            }
+
+            return new Vector2(Random.Range(-screenWidthLimit, screenWidthLimit), maxY);
+        }
         private Vector2 GetNearPosition(Vector2 center, float minY, float maxY, float screenWidthLimit,
             List<Vector3> spawnedPositions)
         {
             int attempts = 0;
-            float checkRadius = spacing * 0.85f;
+            float checkRadius = spacing * 0.82f;
+            float maxDist = levelDatabase.levels[UseProfile.CurrentLevel - 1].maxPairDistance;
 
             while (attempts < 150)
             {
                 attempts++;
-                Vector2 randomDir = Random.insideUnitCircle * levelDatabase.levels[UseProfile.CurrentLevel - 1].maxPairDistance;
+                Vector2 randomDir = Random.insideUnitCircle * maxDist;
                 Vector2 candidate = center + randomDir;
 
                 candidate.x = Mathf.Clamp(candidate.x, -screenWidthLimit, screenWidthLimit);
-                candidate.y = Mathf.Clamp(candidate.y, minY, maxY);
+                candidate.y = Mathf.Clamp(candidate.y, minY, maxY + spacing);
 
-                bool isOverlapping = false;
-                foreach (var p in spawnedPositions)
-                {
-                    if (Vector2.Distance(candidate, p) < checkRadius)
-                    {
-                        isOverlapping = true;
-                        break;
-                    }
-                }
-
-                if (!isOverlapping) return candidate;
+                if (!IsOverlapping(candidate, spawnedPositions, checkRadius))
+                    return candidate;
             }
 
             return GetRandomOrganicPosition(minY, maxY, screenWidthLimit, spawnedPositions);
         }
 
-        private Vector2 GetRandomOrganicPosition(float minY, float maxY, float screenWidthLimit,
-            List<Vector3> spawnedPositions)
+        private bool IsOverlapping(Vector2 pos, List<Vector3> spawnedPositions, float radius)
         {
-            int attempts = 0;
-            float checkRadius = spacing * 0.85f;
-
-            while (attempts < 200)
+            for (int i = 0; i < spawnedPositions.Count; i++)
             {
-                attempts++;
-                // Ưu tiên tìm ở vùng dưới trước (minY) để lấp đầy từ dưới lên
-                float x = Random.Range(-screenWidthLimit, screenWidthLimit);
-                float y = Random.Range(minY, maxY);
-                Vector2 candidate = new Vector2(x, y);
-
-                bool isOverlapping = false;
-                foreach (var p in spawnedPositions)
-                {
-                    if (Vector2.Distance(candidate, p) < checkRadius)
-                    {
-                        isOverlapping = true;
-                        break;
-                    }
-                }
-
-                if (!isOverlapping) return candidate;
+                if (Vector2.Distance(pos, spawnedPositions[i]) < radius)
+                    return true;
             }
 
-            return new Vector2(Random.Range(-screenWidthLimit, screenWidthLimit), maxY); // Fallback
+            return false;
         }
 
         #endregion
@@ -314,7 +308,6 @@ namespace ThanhND
         {
             if (x == y) return 0;
             int compare = x.transform.position.y.CompareTo(y.transform.position.y);
-            // Nếu Y bằng nhau, so sánh ID hoặc InstanceID để tránh bị mất phần tử trong Set
             return compare == 0 ? x.GetInstanceID().CompareTo(y.GetInstanceID()) : compare;
         }
     }
