@@ -4,120 +4,125 @@ using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 namespace ThanhND
 {
+    /// <summary>
+    /// Điều phối luồng gameplay: spawn cặp đồ vật, thả vào nồi, ghép cặp, thắng/thua và cập nhật HUD tiến độ.
+    /// </summary>
     public class GameplayController : Singleton<GameplayController>
     {
+        #region Constants
+
+        private const float ProgressSliderMin = 0f;
+        private const float ProgressSliderMax = 1f;
+        private const float StackVerticalNudge = 0.3f;
+        private const float ObjectAppearDuration = 0.3f;
+        private const float StackScrollDuration = 0.5f;
+        private const float PairSpawnHeightStepFactor = 0.3f;
+        private const int SpawnYieldInterval = 15;
+        private const int MaxOrganicSpawnAttempts = 250;
+        private const int MaxNearSpawnAttempts = 150;
+        private const int OrganicSpawnRelaxThreshold = 100;
+        private const float OrganicSpawnRelaxStep = 0.05f;
+        private const float OverlapRadiusFactor = 0.82f;
+
+        #endregion
+
+        #region Serialized fields
+
         [ReadOnly] public GameState gameState = GameState.Loading;
 
-        [Title("Cấu hình vị trí")] [SerializeField]
-        private float startY = -3f;
-
+        [Title("Bố cục spawn")]
+        [SerializeField] private float startY = -3f;
         [SerializeField] private float paddingX = 0.5f;
         [SerializeField] private float spacing = 1.1f;
-
         [SerializeField] private LevelDatabase levelDatabase;
-        private SortedSet<ObjectDrop> totalObjectDrops = new SortedSet<ObjectDrop>(new ObjectYComparer());
-        private List<ObjectDrop> objectDropped = new List<ObjectDrop>();
-        private int maxObjectsInPot = 3;
+        [SerializeField] private GameObject allObjectsParent;
+        [SerializeField] private int maxAvailableTypes = 27;
 
-        [SerializeField] GameObject allObjectsParent;
-        [SerializeField] int maxAvailableTypes = 27; // Thay bằng con số thực tế bạn có
+        [Title("Luật nồi")]
+        [SerializeField] private int maxObjectsInPot = 3;
+
+        [Title("HUD tiến độ level")]
+        [Tooltip("Khuyến nghị Min = 0, Max = 1, Interactable = false.")]
+        [SerializeField] private Slider levelProgressSlider;
+
+        [Tooltip("Tùy chọn: Image kiểu Filled nếu không dùng Slider.")]
+        [SerializeField] private Image levelProgressFill;
+
+        [SerializeField] private Text levelProgressPercentText;
+        [SerializeField] private Text levelRemainingItemsText;
+
+        [SerializeField] private string progressPercentFormat = "{0}%";
+        [SerializeField] private string remainingItemsFormat = "Còn lại: {0}";
+
+        #endregion
+
+        #region Runtime state
+
+        private readonly SortedSet<ObjectDrop> _objectsOnStack =
+            new SortedSet<ObjectDrop>(new ObjectYComparer());
+
+        private readonly List<ObjectDrop> _objectsInPot = new List<ObjectDrop>();
+        private bool _progressSliderConfigured;
+        private int _totalObjectsAtLevelStart;
+        private int _pairsCleared;
+
+        #endregion
+
+        #region Public read-only (HUD / analytics)
+
+        /// <summary>Tiến độ level [0, 1]: đồng bộ với số vật còn lại (0 vật = 100%).</summary>
+        public float LevelProgressNormalized { get; private set; }
+
+        /// <summary>Số vật phẩm chưa bị loại; mỗi cặp ghép xong trừ đúng 2.</summary>
+        public int RemainingItemsCount =>
+            _totalObjectsAtLevelStart > 0
+                ? Mathf.Max(0, _totalObjectsAtLevelStart - 2 * _pairsCleared)
+                : 0;
+
         public float screenWidthLimitPosX { get; private set; }
+
+        #endregion
+
+        #region Unity lifecycle
 
         private void Start()
         {
             Init().Forget();
         }
 
-        private float CalculateScreenWidth()
-        {
-            Camera cam = Camera.main;
-            float height = 2f * cam.orthographicSize;
-            screenWidthLimitPosX = height * cam.aspect / 2f;
-            Debug.LogError(screenWidthLimitPosX);
+        #endregion
 
-            var screenWidthLimit = screenWidthLimitPosX - paddingX;
-            screenWidthLimitPosX -= spacing / 2;
-            return screenWidthLimit;
-        }
+        #region Init & game flow
 
         [Button]
         private async UniTaskVoid Init()
         {
-            if (levelDatabase != null && levelDatabase.levels.Count > 0)
-            {
-                await SpawnObjects();
-                if (LoadingPanel.Instance)
-                {
-                    LoadingPanel.Instance.ActiveScene(StartGame);
-                }
-                else
-                {
-                    StartGame();
-                }
-            }
+            if (levelDatabase == null || levelDatabase.levels.Count == 0)
+                return;
+
+            await SpawnObjects();
+
+            if (LoadingPanel.Instance != null)
+                LoadingPanel.Instance.ActiveScene(StartGame);
+            else
+                StartGame();
         }
 
         private void StartGame()
         {
             gameState = GameState.Playing;
 
-            foreach (var objectDrop in totalObjectDrops)
-            {
-                objectDrop.transform.DOScale(1, 0.3f);
-            }
+            foreach (ObjectDrop drop in _objectsOnStack)
+                drop.transform.DOScale(1f, ObjectAppearDuration);
         }
 
-        public void OnDropObject(ObjectDrop objectDrop)
+        private void WinGame()
         {
-            totalObjectDrops.Remove(objectDrop);
-            allObjectsParent.transform.DOKill();
-            if (totalObjectDrops.Count == 0) return;
-            float targetY = allObjectsParent.transform.position.y - totalObjectDrops.Min.transform.position.y - 0.3f;
-            allObjectsParent.transform.DOMoveY(targetY, 0.5f);
-            objectDrop.transform.SetParent(this.transform);
-        }
-
-        public void OnObjectIsInPot(ObjectDrop objectDrop)
-        {
-            Debug.LogError("zo pot " + objectDrop.id);
-            objectDropped.Add(objectDrop);
-
-            CheckLossGame();
-        }
-
-        public void CheckObjectsInPot(ObjectDrop objectDrop, ObjectDrop otherObjectDrop)
-        {
-            Debug.LogError("Xoa 2 Object :" + objectDrop.id);
-
-            objectDrop.gameObject.SetActive(false);
-            otherObjectDrop.gameObject.SetActive(false);
-            objectDropped.Remove(objectDrop);
-            objectDropped.Remove(otherObjectDrop);
-            if (totalObjectDrops.Count == 0 && objectDropped.Count == 0)
-            {
-                WinGame();
-            }
-        }
-
-        private void CheckLossGame()
-        {
-            if (objectDropped.Count > maxObjectsInPot)
-            {
-                bool lossGame = true;
-                for (int i = 1; i < objectDropped.Count; i++)
-                {
-                    if (objectDropped[i].id == objectDropped[i - 1].id)
-                    {
-                        lossGame = false;
-                        break;
-                    }
-                }
-
-                if (lossGame) LossGame();
-            }
+            WinGamePopUp.Init();
         }
 
         private void LossGame()
@@ -126,173 +131,300 @@ namespace ThanhND
             RevivePopUp.Init();
         }
 
-        private void WinGame()
+        #endregion
+
+        #region Object interaction (gọi từ ObjectDrop)
+
+        public void OnDropObject(ObjectDrop objectDrop)
         {
-            WinGamePopUp.Init();
+            _objectsOnStack.Remove(objectDrop);
+            allObjectsParent.transform.DOKill();
+
+            if (_objectsOnStack.Count == 0)
+                return;
+
+            float targetY = allObjectsParent.transform.position.y -
+                            _objectsOnStack.Min.transform.position.y - StackVerticalNudge;
+
+            allObjectsParent.transform.DOMoveY(targetY, StackScrollDuration);
+            objectDrop.transform.SetParent(transform);
         }
 
-        #region SpawnObjects
+        public void OnObjectIsInPot(ObjectDrop objectDrop)
+        {
+            _objectsInPot.Add(objectDrop);
+            EvaluateLossCondition();
+        }
+
+        public void CheckObjectsInPot(ObjectDrop a, ObjectDrop b)
+        {
+            if (a == null || b == null || !a.gameObject.activeInHierarchy || !b.gameObject.activeInHierarchy)
+                return;
+
+            if (!_objectsInPot.Contains(a) || !_objectsInPot.Contains(b))
+                return;
+
+            _pairsCleared++;
+            RefreshProgressHud();
+
+            a.gameObject.SetActive(false);
+            b.gameObject.SetActive(false);
+            _objectsInPot.Remove(a);
+            _objectsInPot.Remove(b);
+
+            if (_objectsOnStack.Count == 0 && _objectsInPot.Count == 0)
+                WinGame();
+        }
+
+        #endregion
+
+        #region Win / loss rules
+
+        private void EvaluateLossCondition()
+        {
+            if (_objectsInPot.Count <= maxObjectsInPot)
+                return;
+
+            if (!PotContainsAdjacentMatch())
+                LossGame();
+        }
+
+        /// <summary>True nếu trong nồi có hai vật liền kề cùng loại (còn cơ hội ghép).</summary>
+        private bool PotContainsAdjacentMatch()
+        {
+            for (int i = 1; i < _objectsInPot.Count; i++)
+            {
+                if (_objectsInPot[i].id == _objectsInPot[i - 1].id)
+                    return true;
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region HUD — tiến độ level
+
+        private void BeginLevelProgress(int spawnedObjectCount)
+        {
+            _totalObjectsAtLevelStart = spawnedObjectCount;
+            _pairsCleared = 0;
+            RefreshProgressHud();
+        }
+
+        private void RefreshProgressHud()
+        {
+            // Một nguồn sự thật: % = phần đã loại khỏi level; còn 0 vật => 100%.
+            if (_totalObjectsAtLevelStart <= 0)
+                LevelProgressNormalized = 1f;
+            else
+            {
+                float cleared = _totalObjectsAtLevelStart - RemainingItemsCount;
+                LevelProgressNormalized = Mathf.Clamp01(cleared / _totalObjectsAtLevelStart);
+            }
+
+            EnsureProgressSliderRange();
+
+            if (levelProgressSlider != null)
+                levelProgressSlider.SetValueWithoutNotify(LevelProgressNormalized);
+
+            if (levelProgressFill != null)
+                levelProgressFill.fillAmount = LevelProgressNormalized;
+
+            if (levelProgressPercentText != null)
+            {
+                int percent = Mathf.RoundToInt(LevelProgressNormalized * 100f);
+                levelProgressPercentText.text = string.Format(progressPercentFormat, percent);
+            }
+
+            if (levelRemainingItemsText != null)
+                levelRemainingItemsText.text = string.Format(remainingItemsFormat, RemainingItemsCount);
+        }
+
+        private void EnsureProgressSliderRange()
+        {
+            if (levelProgressSlider == null || _progressSliderConfigured)
+                return;
+
+            levelProgressSlider.minValue = ProgressSliderMin;
+            levelProgressSlider.maxValue = ProgressSliderMax;
+            _progressSliderConfigured = true;
+        }
+
+        #endregion
+
+        #region Spawning
 
         public async UniTask SpawnObjects()
         {
-            float screenWidthLimit = CalculateScreenWidth();
-            LevelData levelData = levelDatabase.levels[UseProfile.CurrentLevel - 1];
+            float halfPlayWidth = ComputeHalfPlayWidth();
+            LevelData level = GetLevelDataForCurrentProfile();
 
-            foreach (var objectDrop in FindObjectsOfType<ObjectDrop>())
+            foreach (ObjectDrop drop in FindObjectsByType<ObjectDrop>(FindObjectsSortMode.None))
             {
-                if (objectDrop != null) Destroy(objectDrop.gameObject);
+                if (drop != null)
+                    Destroy(drop.gameObject);
             }
 
-            objectDropped.Clear();
-            List<string> objectIDsToSpawn = PrepareObjectList(levelData);
-            List<Vector3> spawnedPositions = new List<Vector3>();
-            totalObjectDrops.Clear();
+            _objectsInPot.Clear();
 
-            float currentMaxY = startY + spacing; 
-            float progressStepY = (spacing * 0.3f); // Tỉ lệ nới lỏng sau mỗi cặp
+            List<string> spawnQueue = BuildSpawnQueue(level);
+            BeginLevelProgress(spawnQueue.Count);
 
-            for (int i = 0; i < objectIDsToSpawn.Count; i += 2)
+            var spawnedPositions = new List<Vector3>();
+            _objectsOnStack.Clear();
+
+            float rowMaxY = startY + spacing;
+            float rowStepY = spacing * PairSpawnHeightStepFactor;
+
+            for (int i = 0; i < spawnQueue.Count; i += 2)
             {
-                string id = objectIDsToSpawn[i];
+                string address = spawnQueue[i];
 
-                Vector2 pos1 = GetRandomOrganicPosition(startY, currentMaxY, screenWidthLimit, spawnedPositions);
-                spawnedPositions.Add(pos1);
-                await CreateObject(id, pos1);
+                Vector2 first = GetRandomOrganicPosition(startY, rowMaxY, halfPlayWidth, spawnedPositions);
+                spawnedPositions.Add(first);
+                await SpawnOne(address, first);
 
-                Vector2 pos2 = GetNearPosition(pos1, startY, currentMaxY, screenWidthLimit, spawnedPositions);
-                spawnedPositions.Add(pos2);
-                await CreateObject(id, pos2);
+                Vector2 second = GetNearPosition(first, startY, rowMaxY, halfPlayWidth, spawnedPositions, level);
+                spawnedPositions.Add(second);
+                await SpawnOne(address, second);
 
-                currentMaxY += progressStepY;
+                rowMaxY += rowStepY;
 
-                if (i % 15 == 0) await UniTask.Yield();
+                if (i % SpawnYieldInterval == 0)
+                    await UniTask.Yield();
             }
         }
 
-        private List<string> PrepareObjectList(LevelData levelData)
-
+        private LevelData GetLevelDataForCurrentProfile()
         {
-            List<string> list = new List<string>();
+            int index = Mathf.Clamp(UseProfile.CurrentLevel - 1, 0, levelDatabase.levels.Count - 1);
+            return levelDatabase.levels[index];
+        }
 
+        private float ComputeHalfPlayWidth()
+        {
+            Camera cam = Camera.main;
+            float halfHeight = cam.orthographicSize;
+            screenWidthLimitPosX = halfHeight * cam.aspect;
+            float usableHalfWidth = screenWidthLimitPosX - paddingX;
+            screenWidthLimitPosX -= spacing * 0.5f;
+            return usableHalfWidth;
+        }
 
-            List<int> selectedTypes = new List<int>();
+        /// <summary>
+        /// Danh sách địa chỉ Addressables: mỗi cặp liên tiếp cùng prefab (spawn 2 lần cùng id).
+        /// </summary>
+        private List<string> BuildSpawnQueue(LevelData levelData)
+        {
+            var queue = new List<string>();
+            var typeIds = new List<int>(maxAvailableTypes);
+            for (int i = 1; i <= maxAvailableTypes; i++)
+                typeIds.Add(i);
 
-            List<int> allAvailableIds = new List<int>();
+            Shuffle(typeIds);
 
-
-            for (int i = 1; i <= maxAvailableTypes; i++) allAvailableIds.Add(i);
-
-
-            for (int i = 0; i < allAvailableIds.Count; i++)
-
-            {
-                int temp = allAvailableIds[i];
-
-                int randomIndex = Random.Range(i, allAvailableIds.Count);
-
-                allAvailableIds[i] = allAvailableIds[randomIndex];
-
-                allAvailableIds[randomIndex] = temp;
-            }
-
-
+            var selectedTypes = new List<int>(levelData.totalTypes);
             for (int i = 0; i < levelData.totalTypes; i++)
-
-            {
-                selectedTypes.Add(allAvailableIds[i]);
-            }
-
+                selectedTypes.Add(typeIds[i]);
 
             foreach (int typeId in selectedTypes)
-
             {
                 string path = $"Objects/Object_{typeId}.prefab";
-
-                list.Add(path);
-
-                list.Add(path);
+                queue.Add(path);
+                queue.Add(path);
             }
 
-
-            int remainingPairs = (levelData.totalObjects - list.Count) / 2;
-
-            for (int i = 0; i < remainingPairs; i++)
-
+            int extraPairs = (levelData.totalObjects - queue.Count) / 2;
+            for (int p = 0; p < extraPairs; p++)
             {
-                int randomIdFromSelected = selectedTypes[Random.Range(0, selectedTypes.Count)];
-
-                string path = $"Objects/Object_{randomIdFromSelected}.prefab";
-
-                list.Add(path);
-
-                list.Add(path);
+                int id = selectedTypes[Random.Range(0, selectedTypes.Count)];
+                string path = $"Objects/Object_{id}.prefab";
+                queue.Add(path);
+                queue.Add(path);
             }
 
-
-            return list;
+            return queue;
         }
 
-        private async UniTask CreateObject(string id, Vector2 pos)
+        private static void Shuffle(IList<int> list)
         {
-            var handle = Addressables.LoadAssetAsync<GameObject>(id);
+            for (int i = 0; i < list.Count; i++)
+            {
+                int j = Random.Range(i, list.Count);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+
+        private async UniTask SpawnOne(string address, Vector2 position)
+        {
+            var handle = Addressables.LoadAssetAsync<GameObject>(address);
             await handle;
-            if (handle.Result == null) return;
 
-            GameObject go = Instantiate(handle.Result, pos, Quaternion.Euler(0, 0, Random.Range(0, 360)));
-            go.transform.SetParent(allObjectsParent.transform);
-            go.transform.localScale = Vector3.zero;
-            totalObjectDrops.Add(go.GetComponent<ObjectDrop>());
+            if (handle.Result == null)
+                return;
+
+            GameObject instance = Instantiate(
+                handle.Result,
+                position,
+                Quaternion.Euler(0f, 0f, Random.Range(0f, 360f)));
+
+            instance.transform.SetParent(allObjectsParent.transform);
+            instance.transform.localScale = Vector3.zero;
+            _objectsOnStack.Add(instance.GetComponent<ObjectDrop>());
         }
 
-        private Vector2 GetRandomOrganicPosition(float minY, float maxY, float screenWidthLimit, List<Vector3> spawnedPositions)
+        private Vector2 GetRandomOrganicPosition(
+            float minY, float maxY, float halfWidth, List<Vector3> occupied)
         {
-            int attempts = 0;
-            float checkRadius = spacing * 0.82f; // Nếu vẫn đè nhau quá, hãy tăng nhẹ số này lên 0.85f
+            float radius = spacing * OverlapRadiusFactor;
+            float relaxMaxY = maxY;
 
-            while (attempts < 250)
+            for (int attempt = 0; attempt < MaxOrganicSpawnAttempts; attempt++)
             {
-                attempts++;
+                var candidate = new Vector2(
+                    Random.Range(-halfWidth, halfWidth),
+                    Random.Range(minY, relaxMaxY));
 
-                float x = Random.Range(-screenWidthLimit, screenWidthLimit);
-                float y = Random.Range(minY, maxY);
-                Vector2 candidate = new Vector2(x, y);
-
-                if (!IsOverlapping(candidate, spawnedPositions, checkRadius))
+                if (!OverlapsAny(candidate, occupied, radius))
                     return candidate;
-        
-                if(attempts > 100) maxY += 0.05f;
+
+                if (attempt >= OrganicSpawnRelaxThreshold)
+                    relaxMaxY += OrganicSpawnRelaxStep;
             }
 
-            return new Vector2(Random.Range(-screenWidthLimit, screenWidthLimit), maxY);
+            return new Vector2(Random.Range(-halfWidth, halfWidth), relaxMaxY);
         }
-        private Vector2 GetNearPosition(Vector2 center, float minY, float maxY, float screenWidthLimit,
-            List<Vector3> spawnedPositions)
+
+        private Vector2 GetNearPosition(
+            Vector2 origin,
+            float minY,
+            float maxY,
+            float halfWidth,
+            List<Vector3> occupied,
+            LevelData level)
         {
-            int attempts = 0;
-            float checkRadius = spacing * 0.82f;
-            float maxDist = levelDatabase.levels[UseProfile.CurrentLevel - 1].maxPairDistance;
+            float radius = spacing * OverlapRadiusFactor;
+            float maxDist = level.maxPairDistance;
 
-            while (attempts < 150)
+            for (int attempt = 0; attempt < MaxNearSpawnAttempts; attempt++)
             {
-                attempts++;
-                Vector2 randomDir = Random.insideUnitCircle * maxDist;
-                Vector2 candidate = center + randomDir;
-
-                candidate.x = Mathf.Clamp(candidate.x, -screenWidthLimit, screenWidthLimit);
+                Vector2 candidate = origin + Random.insideUnitCircle * maxDist;
+                candidate.x = Mathf.Clamp(candidate.x, -halfWidth, halfWidth);
                 candidate.y = Mathf.Clamp(candidate.y, minY, maxY + spacing);
 
-                if (!IsOverlapping(candidate, spawnedPositions, checkRadius))
+                if (!OverlapsAny(candidate, occupied, radius))
                     return candidate;
             }
 
-            return GetRandomOrganicPosition(minY, maxY, screenWidthLimit, spawnedPositions);
+            return GetRandomOrganicPosition(minY, maxY, halfWidth, occupied);
         }
 
-        private bool IsOverlapping(Vector2 pos, List<Vector3> spawnedPositions, float radius)
+        private static bool OverlapsAny(Vector2 point, List<Vector3> occupied, float minDistance)
         {
-            for (int i = 0; i < spawnedPositions.Count; i++)
+            for (int i = 0; i < occupied.Count; i++)
             {
-                if (Vector2.Distance(pos, spawnedPositions[i]) < radius)
+                if (Vector2.Distance(point, occupied[i]) < minDistance)
                     return true;
             }
 
@@ -302,13 +434,17 @@ namespace ThanhND
         #endregion
     }
 
-    public class ObjectYComparer : IComparer<ObjectDrop>
+    /// <summary>Sắp xếp ObjectDrop theo trục Y (và InstanceID khi trùng Y) cho tập hợp stack.</summary>
+    public sealed class ObjectYComparer : IComparer<ObjectDrop>
     {
         public int Compare(ObjectDrop x, ObjectDrop y)
         {
-            if (x == y) return 0;
-            int compare = x.transform.position.y.CompareTo(y.transform.position.y);
-            return compare == 0 ? x.GetInstanceID().CompareTo(y.GetInstanceID()) : compare;
+            if (ReferenceEquals(x, y)) return 0;
+            if (x == null) return -1;
+            if (y == null) return 1;
+
+            int byY = x.transform.position.y.CompareTo(y.transform.position.y);
+            return byY != 0 ? byY : x.GetInstanceID().CompareTo(y.GetInstanceID());
         }
     }
 

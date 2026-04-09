@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace ThanhND
@@ -37,17 +36,24 @@ namespace ThanhND
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if (GameplayController.Instance.gameState == GameState.Ended) return;
-            if (other.gameObject.CompareTag("ObjectDrop"))
-            {
-                ObjectDrop otherDrop = other.gameObject.GetComponent<ObjectDrop>();
-                if (otherDrop != null &&
-                    (otherDrop.objectState == ObjectState.InPot || objectState == ObjectState.InPot) && otherDrop.id == id)
-                {
-                    Debug.LogError(otherDrop.gameObject.name + " va cham " + gameObject.name);
-                    GameplayController.Instance.CheckObjectsInPot(this,otherDrop);
-                }
-            }
+            if (GameplayController.Instance.gameState == GameState.Ended)
+                return;
+
+            if (!other.gameObject.CompareTag("ObjectDrop"))
+                return;
+
+            var otherDrop = other.gameObject.GetComponent<ObjectDrop>();
+            if (otherDrop == null || otherDrop.id != id)
+                return;
+
+            if (objectState != ObjectState.InPot && otherDrop.objectState != ObjectState.InPot)
+                return;
+
+            // Unity gọi OnCollisionEnter2D trên cả hai phía; chỉ xử lý một lần cho mỗi cặp va chạm.
+            if (GetInstanceID() > otherDrop.GetInstanceID())
+                return;
+
+            GameplayController.Instance.CheckObjectsInPot(this, otherDrop);
         }
 
     }
