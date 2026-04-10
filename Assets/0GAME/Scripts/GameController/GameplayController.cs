@@ -198,6 +198,44 @@ namespace ThanhND
                 WinGame();
         }
 
+        public bool CanShuffleObjectsOnStack()
+        {
+            // Chỉ cho phép shuffle khi đang chơi và còn ít nhất 2 object trên stack.
+            return gameState == GameState.Playing && _objectsOnStack.Count > 1;
+        }
+
+        public bool ShuffleObjectsOnStack()
+        {
+            if (!CanShuffleObjectsOnStack())
+                return false;
+
+            var activeDrops = new List<ObjectDrop>(_objectsOnStack.Count);
+            foreach (ObjectDrop drop in _objectsOnStack)
+            {
+                if (drop != null && drop.gameObject.activeInHierarchy)
+                    activeDrops.Add(drop);
+            }
+
+            if (activeDrops.Count <= 1)
+                return false;
+
+            // Shuffle vị trí giữa các object còn active trên stack, không đổi id/type.
+            var positions = new List<Vector3>(activeDrops.Count);
+            for (int i = 0; i < activeDrops.Count; i++)
+                positions.Add(activeDrops[i].transform.position);
+
+            ShuffleList(positions);
+
+            _objectsOnStack.Clear();
+            for (int i = 0; i < activeDrops.Count; i++)
+            {
+                activeDrops[i].transform.position = positions[i];
+                _objectsOnStack.Add(activeDrops[i]);
+            }
+
+            return true;
+        }
+
         #endregion
 
         #region Win / loss rules
@@ -415,6 +453,15 @@ namespace ThanhND
         }
 
         private static void Shuffle(IList<int> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                int j = Random.Range(i, list.Count);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+
+        private static void ShuffleList<T>(IList<T> list)
         {
             for (int i = 0; i < list.Count; i++)
             {
