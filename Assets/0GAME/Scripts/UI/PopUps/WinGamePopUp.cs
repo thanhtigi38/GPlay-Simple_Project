@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace ThanhND
@@ -30,10 +31,7 @@ namespace ThanhND
 
             void OnReward()
             {
-                ClosePopUp(() =>
-                {
-                    LoadingPanel.Instance.GotoScene(SceneName.GAME_PLAY,true);
-                });
+                ClosePopUp(GoToGameplaySafe);
             }
         }
         
@@ -41,8 +39,20 @@ namespace ThanhND
         {
             ClosePopUp(() =>
             {
-                LoadingPanel.Instance.GotoScene(SceneName.GAME_PLAY,true);
+                UseProfile.CurrentLevel++;
+                GoToGameplaySafe();
             });
+        }
+
+        private static void GoToGameplaySafe()
+        {
+            if (LoadingPanel.Instance != null && GameController.Instance != null)
+            {
+                LoadingPanel.Instance.GotoScene(SceneName.GAME_PLAY, true);
+                return;
+            }
+
+            SceneManager.LoadScene(SceneName.GAME_PLAY);
         }
         
         public override void ClosePopUp(Action action = null)

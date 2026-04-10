@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace ThanhND
@@ -32,26 +33,41 @@ namespace ThanhND
 
             void OnReward()
             {
-                ClosePopUp(() =>
-                {
-                });
+                ClosePopUp(GoToGameplaySafe);
             }
         }
         
         private void OnReplayButtonClicked()
         {
-            ClosePopUp(() =>
-            {
-                LoadingPanel.Instance.GotoScene(SceneName.GAME_PLAY, true);
-            });
+            ClosePopUp(GoToGameplaySafe);
         }
         
         private void OnHomeButtonClicked()
         {
-            ClosePopUp(() =>
+            ClosePopUp(GoToHomeSafe);
+        }
+
+        private static void GoToGameplaySafe()
+        {
+            // GotoScene gọi GameController.Instance.admobAds — thiếu một trong hai thì fallback load thẳng scene.
+            if (LoadingPanel.Instance != null && GameController.Instance != null)
+            {
+                LoadingPanel.Instance.GotoScene(SceneName.GAME_PLAY, true);
+                return;
+            }
+
+            SceneManager.LoadScene(SceneName.GAME_PLAY);
+        }
+
+        private static void GoToHomeSafe()
+        {
+            if (LoadingPanel.Instance != null && GameController.Instance != null)
             {
                 LoadingPanel.Instance.GotoScene(SceneName.HOME_SCENE, true);
-            });
+                return;
+            }
+
+            SceneManager.LoadScene(SceneName.HOME_SCENE);
         }
         
         public override void ClosePopUp(Action action = null)

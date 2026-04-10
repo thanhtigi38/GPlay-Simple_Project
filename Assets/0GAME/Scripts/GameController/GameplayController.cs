@@ -42,6 +42,28 @@ namespace ThanhND
         [SerializeField] private GameObject allObjectsParent;
         [SerializeField] private int maxAvailableTypes = 27;
 
+        [Title("Sinh level (procedural)")]
+        [Tooltip("Bật để dùng sinh level thay vì LevelDatabase.")]
+        [SerializeField] private bool useProceduralLevels;
+
+        [Tooltip("Nếu tắt procedural, nhưng level vượt quá LevelDatabase thì vẫn sinh level runtime.")]
+        [SerializeField] private bool proceduralWhenOutOfDatabase = true;
+
+        [Min(2)]
+        [SerializeField] private int baseTotalObjects = 30;
+        [Min(0)]
+        [SerializeField] private int totalObjectsIncreasePerLevel = 2;
+
+        [Min(1)]
+        [SerializeField] private int baseTotalTypes = 10;
+        [Min(0)]
+        [SerializeField] private int totalTypesIncreasePerLevel = 0;
+
+        [Min(0f)]
+        [SerializeField] private float baseMaxPairDistance = 4.0f;
+        [Min(0f)]
+        [SerializeField] private float maxPairDistanceIncreasePerLevel = 0.2f;
+
         [Title("Luật nồi")]
         [SerializeField] private int maxObjectsInPot = 3;
 
@@ -77,7 +99,7 @@ namespace ThanhND
         /// <summary>Tiến độ level [0, 1]: đồng bộ với số vật còn lại (0 vật = 100%).</summary>
         public float LevelProgressNormalized { get; private set; }
 
-        /// <summary>Số vật phẩm chưa bị loại; mỗi cặp ghép xong trừ đúng 2.</summary>
+        /// <summary>Số vật phẩm chưa bị loại; mỗi cặp ghép xong trừ 2.</summary>
         public int RemainingItemsCount =>
             _totalObjectsAtLevelStart > 0
                 ? Mathf.Max(0, _totalObjectsAtLevelStart - 2 * _pairsCleared)
@@ -298,8 +320,53 @@ namespace ThanhND
 
         private LevelData GetLevelDataForCurrentProfile()
         {
-            int index = Mathf.Clamp(UseProfile.CurrentLevel - 1, 0, levelDatabase.levels.Count - 1);
-            return levelDatabase.levels[index];
+            int levelNumber = Mathf.Max(1, UseProfile.CurrentLevel);
+
+            if (useProceduralLevels)
+                return GenerateLevelData(levelNumber);
+
+            if (levelDatabase != null && levelDatabase.levels != null && levelDatabase.levels.Count > 0)
+            {
+                if (levelNumber - 1 < levelDatabase.levels.Count)
+                    return levelDatabase.levels[levelNumber - 1];
+
+                if (proceduralWhenOutOfDatabase)
+                    return GenerateLevelData(levelNumber);
+
+                return levelDatabase.levels[levelDatabase.levels.Count - 1];
+            }
+
+            return GenerateLevelData(levelNumber);
+        }
+
+        private LevelData GenerateLevelData(int levelNumber)
+        {
+            // levelNumber bắt đầu từ 1.
+            int step = Mathf.Max(0, levelNumber - 1);
+
+            int totalObjects = baseTotalObjects + step * totalObjectsIncreasePerLevel;
+            if (totalObjects < 2) totalObjects = 2;
+            if ((totalObjects & 1) == 1) totalObjects += 1; // đảm bảo chẵn để luôn spawn theo cặp
+
+            int totalTypes = baseTotalTypes + step * totalTypesIncreasePerLevel;
+            totalTypes = Mathf.Clamp(totalTypes, 1, maxAvailableTypes);
+
+            // Invariant của BuildSpawnQueue:
+            // - luôn spawn 2 object mỗi type trước => cần totalObjects >= 2 * totalTypes.
+            // - cũng không thể có types > totalObjects/2.
+            totalTypes = Mathf.Min(totalTypes, totalObjects / 2);
+            totalObjects = Mathf.Max(totalObjects, totalTypes * 2);
+
+            float maxPairDistance = baseMaxPairDistance + step * maxPairDistanceIncreasePerLevel;
+            if (maxPairDistance < 0f) maxPairDistance = 0f;
+
+            return new LevelData
+            {
+                id = levelNumber,
+                totalObjects = totalObjects,
+                totalTypes = totalTypes,
+                maxPairDistance = maxPairDistance
+            };
         }
 
         private float ComputeHalfPlayWidth()
