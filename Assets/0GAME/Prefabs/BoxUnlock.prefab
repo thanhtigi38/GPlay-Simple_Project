@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3028759257270983991}
   - component: {fileID: 6358488943997135642}
   - component: {fileID: 1716301554983573827}
+  - component: {fileID: 4782165038112947651}
   m_Layer: 0
   m_Name: BoxUnlock
   m_TagString: Untagged
@@ -165,3 +166,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &4782165038112947651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9196810671340834276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f6d94f2f3a94bb8a4ab6b958a2b03c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxRenderer: {fileID: 3028759257270983991}
+  rewardIconRenderer: {fileID: 0}
+  rewardIconSprite: {fileID: 0}
+  rewardIconLocalPosition: {x: 0, y: 0, z: 0}
+  rewardIconLocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  lockedColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  rewardPlacement: box_unlock
+  noVideoMessage: No video available
+  potCapacityIncrease: 1

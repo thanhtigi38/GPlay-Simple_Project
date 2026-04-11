@@ -1303,6 +1303,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4782165038112947651, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
+      propertyPath: rewardIconSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f414f6f2260daf44fb73b6d822590cd6, type: 3}
+    - target: {fileID: 5523798386937953504, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5523798386937953504, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5523798386937953504, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5523798386937953504, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2105,6 +2121,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4782165038112947651, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
+      propertyPath: rewardIconSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f414f6f2260daf44fb73b6d822590cd6, type: 3}
+    - target: {fileID: 5523798386937953504, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5523798386937953504, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5523798386937953504, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5523798386937953504, guid: 7ef571aa86b12c340af29b3973ed6331, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2161,7 +2193,7 @@ SceneRoots:
   - {fileID: 676692997}
   - {fileID: 519420032}
   - {fileID: 1192195049}
-  - {fileID: 8296357240844670791}
   - {fileID: 1413171089}
+  - {fileID: 8296357240844670791}
   - {fileID: 135422362}
   - {fileID: 634374692}

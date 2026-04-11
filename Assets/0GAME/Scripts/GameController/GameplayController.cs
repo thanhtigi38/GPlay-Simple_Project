@@ -240,6 +240,14 @@ namespace ThanhND
 
         #region Win / loss rules
 
+        public void IncreaseMaxObjectsInPot(int amount)
+        {
+            if (amount <= 0)
+                return;
+
+            maxObjectsInPot += amount;
+        }
+
         private void EvaluateLossCondition()
         {
             if (_objectsInPot.Count <= maxObjectsInPot)

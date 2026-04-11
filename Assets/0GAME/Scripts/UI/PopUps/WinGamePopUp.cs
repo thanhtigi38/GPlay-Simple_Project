@@ -31,17 +31,22 @@ namespace ThanhND
 
             void OnReward()
             {
-                ClosePopUp(GoToGameplaySafe);
+                ClosePopUp(CompleteWinAndContinue);
             }
         }
-        
+
         private void OnClaimButtonClicked()
         {
-            ClosePopUp(() =>
-            {
-                UseProfile.CurrentLevel++;
-                GoToGameplaySafe();
-            });
+            ClosePopUp(CompleteWinAndContinue);
+        }
+
+        /// <summary>
+        /// Phải gọi cho mọi cách thoát win (Claim / Claim x2), nếu không level không tăng và spawn không đổi.
+        /// </summary>
+        private static void CompleteWinAndContinue()
+        {
+            UseProfile.CurrentLevel++;
+            GoToGameplaySafe();
         }
 
         private static void GoToGameplaySafe()

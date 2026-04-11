@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 /***
  * HoangTV 2/2020
@@ -36,6 +37,16 @@ public class BoxController : MonoBehaviour
         Instance = this;
         this.gameObject.name = "BoxController";
         isLoadingShow = true;
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
     }
 
     public void GetBoxAsync(BaseBox instance, Action<BaseBox> OnLoadedFirst, Action<BaseBox> OnLoaded, string resourcePath)
@@ -170,7 +181,7 @@ public class BoxController : MonoBehaviour
 
     }
 
-    protected void OnLevelWasLoaded(int level)
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (currentScene == null)
             currentScene = GameObject.FindObjectOfType<BaseScene>();
