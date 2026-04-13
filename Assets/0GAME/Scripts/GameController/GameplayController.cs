@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -234,6 +234,131 @@ namespace ThanhND
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Bomb: playing and exists a clearable pair (pot+stack same id, or two in pot same id if no stack match).
+        /// </summary>
+        public bool CanBombPairFromPot()
+        {
+            return gameState == GameState.Playing && FindBombPair(out _, out _);
+        }
+
+        /// <summary>
+        /// Clears one pair: prefer pot + closest stack same id; else two same id in pot. Progress like manual match.
+        /// </summary>
+        public bool TryBombClearOnePotStackPair()
+        {
+            if (gameState != GameState.Playing)
+                return false;
+
+            if (!FindBombPair(out ObjectDrop a, out ObjectDrop b))
+                return false;
+
+            if (a == null || b == null || ReferenceEquals(a, b)
+                || !a.gameObject.activeInHierarchy || !b.gameObject.activeInHierarchy)
+                return false;
+
+            _pairsCleared++;
+            RefreshProgressHud();
+
+            a.gameObject.SetActive(false);
+            b.gameObject.SetActive(false);
+            _objectsInPot.Remove(a);
+            _objectsInPot.Remove(b);
+            _objectsOnStack.Remove(a);
+            _objectsOnStack.Remove(b);
+
+            RefreshStackScrollAfterStackRemoval();
+
+            if (_objectsOnStack.Count == 0 && _objectsInPot.Count == 0)
+                WinGame();
+            else
+                EvaluateLossCondition();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Bomb pair: (1) one in pot + one on stack same id (Idle, closest 2D to pot item);
+        /// (2) else two same id in pot.
+        /// </summary>
+        private bool FindBombPair(out ObjectDrop a, out ObjectDrop b)
+        {
+            a = null;
+            b = null;
+
+            foreach (ObjectDrop potDrop in _objectsInPot)
+            {
+                if (potDrop == null || !potDrop.gameObject.activeInHierarchy)
+                    continue;
+
+                var potPos = (Vector2)potDrop.transform.position;
+                ObjectDrop bestStack = null;
+                float bestSqrDist = float.PositiveInfinity;
+
+                foreach (ObjectDrop stackDrop in _objectsOnStack)
+                {
+                    if (stackDrop == null || !stackDrop.gameObject.activeInHierarchy)
+                        continue;
+                    if (stackDrop.objectState != ObjectState.Idle)
+                        continue;
+                    if (stackDrop.id != potDrop.id)
+                        continue;
+
+                    float sqr = ((Vector2)stackDrop.transform.position - potPos).sqrMagnitude;
+                    if (sqr < bestSqrDist)
+                    {
+                        bestSqrDist = sqr;
+                        bestStack = stackDrop;
+                    }
+                }
+
+                if (bestStack != null)
+                {
+                    a = potDrop;
+                    b = bestStack;
+                    return true;
+                }
+            }
+
+            for (int i = 0; i < _objectsInPot.Count; i++)
+            {
+                ObjectDrop x = _objectsInPot[i];
+                if (x == null || !x.gameObject.activeInHierarchy)
+                    continue;
+
+                for (int j = i + 1; j < _objectsInPot.Count; j++)
+                {
+                    ObjectDrop y = _objectsInPot[j];
+                    if (y == null || !y.gameObject.activeInHierarchy)
+                        continue;
+                    if (x.id != y.id)
+                        continue;
+
+                    a = x;
+                    b = y;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void RefreshStackScrollAfterStackRemoval()
+        {
+            if (allObjectsParent == null)
+                return;
+
+            allObjectsParent.transform.DOKill();
+
+            if (_objectsOnStack.Count == 0)
+                return;
+
+            float targetY = allObjectsParent.transform.position.y -
+                            _objectsOnStack.Min.transform.position.y - StackVerticalNudge;
+
+            allObjectsParent.transform.DOMoveY(targetY, StackScrollDuration);
         }
 
         #endregion
